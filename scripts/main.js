@@ -128,7 +128,7 @@ const renderIssueCard = (issues) => {
     issueCard.innerHTML = `
   <div class="flex-1 flex flex-col gap-3 p-4 me-auto">
     <div class="flex items-center justify-between">
-      <img src="${element.status === "closed" ? "assets/status_closed.png" : "/assets/status_open.png"}" alt="" width="24px" height="24px" />
+      <img src="${element.status === "closed" ? "./assets/status_closed.png" : "./assets/status_open.png"}" alt="" width="24px" height="24px" />
       ${element.priority.toLowerCase() === "low" ? `<p class="bg-gray-100 rounded-full px-6 py-1 text-gray-500 text-sm">${element.priority.toUpperCase()}</p>` : ""}
       ${element.priority.toLowerCase() === "medium" ? `<p class="bg-yellow-100 rounded-full px-6 py-1 text-yellow-600 text-sm">${element.priority.toUpperCase()}</p>` : ""}
       ${element.priority.toLowerCase() === "high" ? `<p class="bg-red-100 rounded-full px-6 py-1 text-red-600 text-sm">${element.priority.toUpperCase()}</p>` : ""}
