@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <title>GitHub Issue Tracker</title>
+  </head>
+  <body class="bg-[#F8FAFC] flex flex-col justify-center items-center">
+    <!-- Login Section -->
+    <section
+      id="login_section"
+      class="w-full md:h-screen flex flex-col justify-center items-center"
+    >
+      <div
+        class="flex flex-col mx-auto w-full md:w-[520px] bg-white md:drop-shadow-lg gap-6 p-6 md:rounded-lg"
+      >
+        <div
+          class="flex flex-col items-center justify-center gap-6 text-center"
+        >
+          <img
+            src="/assets/github-logo.png"
+            alt="github_logo"
+            width="100px"
+            height="100px"
+          />
+          <div class="flex flex-col items-center justify-center gap-1">
+            <h1 class="font-semibold w-full text-[#1F2937] text-xl">
+              GitHub Issues Tracker
+            </h1>
+            <p class="font-normal text-[#64748B] text-sm">
+              Sign in to manage your issues
+            </p>
+          </div>
+        </div>
+        <div
+          class="flex flex-col justify-center md:w-[450px] mx-auto w-full gap-4"
+        >
+          <div class="flex flex-col gap-1">
+            <label for="username">Username</label>
+            <input
+              class="input w-full"
+              type="email"
+              name=""
+              id="username_input"
+              placeholder="Enter Username"
+            />
+            <p class="text-primary text-sm">Default: admin</p>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="password">Password</label>
+            <input
+              class="input w-full"
+              type="password"
+              name=""
+              id="password_input"
+              placeholder="Enter Password"
+            />
+            <p class="text-primary text-sm">Default: admin123</p>
+          </div>
+        </div>
+        <div class="flex mx-auto w-full md:w-[450px]">
+          <button
+            onclick="signIn()"
+            class="btn btn-primary font-semibold text-[16px] w-full"
+          >
+            Sign In
+          </button>
+        </div>
+        <div
+          class="flex items-center justify-center w-full md:w-[450px] gap-2 mx-auto"
+        >
+          <div class="border border-[#E4E4E7] w-full"></div>
+          <div>Or</div>
+          <div class="border border-[#E4E4E7] w-full"></div>
+        </div>
+        <div
+          class="text-center flex flex-col justify-center items-center gap-2"
+        >
+          <p class="font-normal text-[#64748B] text-sm">Demo Credentials:</p>
+          <div
+            class="bg-[#F8FAFC] rounded-lg flex flex-col justify-center items-center w-full md:w-[450px] p-6"
+          >
+            <p><strong>Username:</strong> admin</p>
+            <p><strong>Password:</strong> admin123</p>
+          </div>
+        </div>
+      </div>
+      <div id="login_toaster" class="toast toast-end"></div>
+    </section>
+    <!-- Login Section -->
+  </body>
+  <script src="scripts/login.js"></script>
+</html>
