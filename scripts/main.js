@@ -21,6 +21,7 @@ fetchAllIssues();
 
 const renderIssueCard = (issues) => {
   const issuesContainer = document.getElementById("issue_container");
+  issuesContainer.innerHTML = "";
   issues.forEach((element) => {
     const issueCard = document.createElement("div");
     issueCard.classList.add(
@@ -38,17 +39,23 @@ const renderIssueCard = (issues) => {
 
     issueCard.addEventListener("click", () => {
       const modalContainer = document.getElementById("modal_div");
-      modalContainer.innerHTML = "";
+      modalContainer.showModal();
+      modalContainer.innerHTML = `<span class="loading loading-spinner loading-sm"></span>`;
 
       fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${element.id}`)
         .then((res) => res.json())
         .then((data) => {
           const modalDetails = data.data;
           console.log(modalDetails);
-          const modal = document.createElement("dialog");
-          modal.classList.add("modal");
+          const modal = document.createElement("div");
+          modal.classList.add(
+            "modal-box",
+            "flex",
+            "flex-col",
+            "justify-center",
+            "gap-4",
+          );
           modal.innerHTML = `
-        <div class="modal-box flex flex-col justify-center gap-4">
           <div class="flex flex-col justify-center gap-2">
             <h3 class="font-bold text-lg">${modalDetails.title}</h3>
             <div class="flex items-center gap-2 text-sm text-gray-500">
@@ -114,10 +121,9 @@ const renderIssueCard = (issues) => {
               <button class="btn btn-primary">Close</button>
             </form>
           </div>
-        </div>
     `;
+          modalContainer.innerHTML = "";
           modalContainer.appendChild(modal);
-          modalContainer.showModal();
         });
     });
     issueCard.innerHTML = `
@@ -163,11 +169,14 @@ const searchIssue = () => {
     });
 };
 
-document.getElementById("category").addEventListener("click", (event) => {
-  const key = event.target.innerText.toLowerCase();
-  categoryBtnHandler(key);
-  categorizedRender(key);
-});
+const categoryBtn = document.getElementById("category").children;
+for (btn of categoryBtn) {
+  btn.addEventListener("click", (event) => {
+    const key = event.target.innerText.toLowerCase();
+    categoryBtnHandler(key);
+    categorizedRender(key);
+  });
+}
 
 const categoryBtnHandler = (key) => {
   const categoryContainer = document.getElementById("category");
@@ -181,7 +190,8 @@ const categoryBtnHandler = (key) => {
 };
 
 const categorizedRender = (category) => {
-  if (category != "all") {
+  console.log(category);
+  if (category != "all" || category === "") {
     const categorizedIssues = allIssues.filter(
       (element) => element.status.toLowerCase() === category,
     );
