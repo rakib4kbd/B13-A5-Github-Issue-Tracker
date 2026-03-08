@@ -162,9 +162,25 @@ const searchIssue = () => {
   fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${query}`)
     .then((res) => res.json())
     .then((data) => {
-      document.getElementById("issue_count").innerText =
-        `${data.data.length} Issues`;
-      renderIssueCard(data.data);
+      const searchedIssues = data.data;
+
+      const selectedBtn = document
+        .getElementById("category")
+        .querySelector("button.bg-primary")
+        .innerText.toLowerCase();
+
+      if (selectedBtn === "all") {
+        renderIssueCard(searchedIssues);
+        document.getElementById("issue_count").innerText =
+          `${searchedIssues.length} Issues`;
+      } else {
+        const issues = searchedIssues.filter(
+          (issue) => issue.status === selectedBtn,
+        );
+        renderIssueCard(issues);
+        document.getElementById("issue_count").innerText =
+          `${issues.length} Issues`;
+      }
     });
 };
 
@@ -182,8 +198,10 @@ const categoryBtnHandler = (key) => {
   for (category of categoryContainer.children) {
     if (category.innerText.toLowerCase() === key) {
       category.classList.add("bg-primary", "text-white");
+      category.classList.remove("text-gray-500");
     } else {
       category.classList.remove("bg-primary", "text-white");
+      category.classList.add("text-gray-500");
     }
   }
 };
