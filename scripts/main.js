@@ -1,19 +1,15 @@
 const allIssues = [];
 
-const fetchSingleIssue = (id) => {
-  fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
-    });
-};
-
 const fetchAllIssues = () => {
+  document.getElementById("issue_count").innerHTML =
+    `<span class="loading loading-spinner loading-sm"></span>
+`;
   fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues")
     .then((res) => res.json())
     .then((data) => {
       const arr = data.data;
       allIssues.push(...arr);
+
       document.getElementById("issue_count").innerText =
         `${allIssues.length} Issues`;
       renderIssueCard(allIssues);
@@ -25,7 +21,6 @@ fetchAllIssues();
 
 const renderIssueCard = (issues) => {
   const issuesContainer = document.getElementById("issue_container");
-  issuesContainer.innerHTML = "";
   issues.forEach((element) => {
     const issueCard = document.createElement("div");
     issueCard.classList.add(
@@ -40,40 +35,44 @@ const renderIssueCard = (issues) => {
       "border-t-4",
       `${element.status === "open" ? "border-t-green-500" : "border-t-purple-500"}`,
     );
-    issueCard.id = `issue_card_${element.id}`;
+
     issueCard.addEventListener("click", () => {
-      const modalDetails = fetchSingleIssue(element.id);
       const modalContainer = document.getElementById("modal_div");
       modalContainer.innerHTML = "";
-      const modal = document.createElement("dialog");
-      modal.classList.add("modal");
-      modal.innerHTML = `
-    <div class="modal-box flex flex-col justify-center gap-4">
+
+      fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${element.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const modalDetails = data.data;
+          console.log(modalDetails);
+          const modal = document.createElement("dialog");
+          modal.classList.add("modal");
+          modal.innerHTML = `
+        <div class="modal-box flex flex-col justify-center gap-4">
           <div class="flex flex-col justify-center gap-2">
-            <h3 class="font-bold text-lg">${element.title}</h3>
+            <h3 class="font-bold text-lg">${modalDetails.title}</h3>
             <div class="flex items-center gap-2 text-sm text-gray-500">
               <p class="bg-green-600 text-white rounded-full px-2">Open</p>
               <div class="border-2 border-gray-500 rounded-full"></div>
-              <p>Opened by mike</p>
+              <p>Opened by ${modalDetails.author}</p>
               <div class="border-2 border-gray-500 rounded-full"></div>
-              <p>22/09/2025</p>
+              <p>${new Date(modalDetails.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
 
           <div class="flex gap-2">
-            <p class="px-4 py-1 text-sm bg-red-100 text-red-600 rounded-full">
-              Bug
-            </p>
-            <p
-              class="px-4 py-1 text-sm bg-yellow-100 text-yellow-600 rounded-full"
-            >
-              Help Wanted
-            </p>
+            ${modalDetails.labels
+              .map(
+                (element) =>
+                  `<p class="px-4 py-1 text-sm bg-orange-100 text-orange-600 rounded-full">
+              ${element}
+            </p>`,
+              )
+              .join("")}
           </div>
 
           <p class="text-gray-500">
-            The navigation menu doesn't collapse properly on mobile devices.
-            Need to fix the responsive behavior.
+          ${modalDetails.description}
           </p>
 
           <div
@@ -81,14 +80,31 @@ const renderIssueCard = (issues) => {
           >
             <div class="flex flex-col justify-center gap-1">
               <p>Assignee:</p>
-              <strong>Fahim Ahmed</strong>
+              <strong>${modalDetails.assignee}</strong>
             </div>
             <div class="flex flex-col justify-center gap-1">
               <p>Priority:</p>
               <div class="flex">
-                <p class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">
+                ${
+                  modalDetails.priority.toLowerCase() === "high"
+                    ? `<p class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">
                   HIGH
-                </p>
+                </p>`
+                    : ""
+                }
+                ${
+                  modalDetails.priority.toLowerCase() === "medium"
+                    ? `<p class="px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">
+                  MEDIUM
+                </p>`
+                    : ""
+                }${
+                  modalDetails.priority.toLowerCase() === "low"
+                    ? `<p class="px-3 py-1 bg-gray-600 text-white text-xs rounded-full">
+                  LOW
+                </p>`
+                    : ""
+                }
               </div>
             </div>
           </div>
@@ -100,10 +116,10 @@ const renderIssueCard = (issues) => {
           </div>
         </div>
     `;
-      modalContainer.appendChild(modal);
-      modal.showModal();
+          modalContainer.appendChild(modal);
+          modalContainer.showModal();
+        });
     });
-
     issueCard.innerHTML = `
   <div class="flex-1 flex flex-col gap-3 p-4 me-auto">
     <div class="flex items-center justify-between">
