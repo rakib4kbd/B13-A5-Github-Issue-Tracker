@@ -137,7 +137,7 @@ const renderIssueCard = (issues) => {
       <h2 class="font-semibold text-xl text-[#1F2937]">
         ${element.title}
       </h2>
-      <p class="text-gray-500 text-sm">
+      <p class="text-gray-500 text-sm line-clamp-2">
         ${element.description}
       </p>
     </div>
