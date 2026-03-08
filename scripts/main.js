@@ -46,7 +46,6 @@ const renderIssueCard = (issues) => {
         .then((res) => res.json())
         .then((data) => {
           const modalDetails = data.data;
-          console.log(modalDetails);
           const modal = document.createElement("div");
           modal.classList.add(
             "modal-box",
@@ -190,7 +189,6 @@ const categoryBtnHandler = (key) => {
 };
 
 const categorizedRender = (category) => {
-  console.log(category);
   if (category != "all" || category === "") {
     const categorizedIssues = allIssues.filter(
       (element) => element.status.toLowerCase() === category,
