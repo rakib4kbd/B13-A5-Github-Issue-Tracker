@@ -1,0 +1,181 @@
+const allIssues = [];
+
+const fetchSingleIssue = (id) => {
+  fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+    });
+};
+
+const fetchAllIssues = () => {
+  fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues")
+    .then((res) => res.json())
+    .then((data) => {
+      const arr = data.data;
+      allIssues.push(...arr);
+      document.getElementById("issue_count").innerText =
+        `${allIssues.length} Issues`;
+      renderIssueCard(allIssues);
+      return allIssues;
+    });
+};
+
+fetchAllIssues();
+
+const renderIssueCard = (issues) => {
+  const issuesContainer = document.getElementById("issue_container");
+  issuesContainer.innerHTML = "";
+  issues.forEach((element) => {
+    const issueCard = document.createElement("div");
+    issueCard.classList.add(
+      "flex",
+      "flex-col",
+      "justify-center",
+      "bg-base-100",
+      "w-full",
+      "h-full",
+      "drop-shadow-sm",
+      "rounded-lg",
+      "border-t-4",
+      `${element.status === "open" ? "border-t-green-500" : "border-t-purple-500"}`,
+    );
+    issueCard.id = `issue_card_${element.id}`;
+    issueCard.addEventListener("click", () => {
+      const modalDetails = fetchSingleIssue(element.id);
+      const modalContainer = document.getElementById("modal_div");
+      modalContainer.innerHTML = "";
+      const modal = document.createElement("dialog");
+      modal.classList.add("modal");
+      modal.innerHTML = `
+    <div class="modal-box flex flex-col justify-center gap-4">
+          <div class="flex flex-col justify-center gap-2">
+            <h3 class="font-bold text-lg">${element.title}</h3>
+            <div class="flex items-center gap-2 text-sm text-gray-500">
+              <p class="bg-green-600 text-white rounded-full px-2">Open</p>
+              <div class="border-2 border-gray-500 rounded-full"></div>
+              <p>Opened by mike</p>
+              <div class="border-2 border-gray-500 rounded-full"></div>
+              <p>22/09/2025</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <p class="px-4 py-1 text-sm bg-red-100 text-red-600 rounded-full">
+              Bug
+            </p>
+            <p
+              class="px-4 py-1 text-sm bg-yellow-100 text-yellow-600 rounded-full"
+            >
+              Help Wanted
+            </p>
+          </div>
+
+          <p class="text-gray-500">
+            The navigation menu doesn't collapse properly on mobile devices.
+            Need to fix the responsive behavior.
+          </p>
+
+          <div
+            class="grid grid-cols-2 items-center bg-[#F8FAFC] p-4 rounded-lg"
+          >
+            <div class="flex flex-col justify-center gap-1">
+              <p>Assignee:</p>
+              <strong>Fahim Ahmed</strong>
+            </div>
+            <div class="flex flex-col justify-center gap-1">
+              <p>Priority:</p>
+              <div class="flex">
+                <p class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">
+                  HIGH
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-action m-0">
+            <form method="dialog">
+              <button class="btn btn-primary">Close</button>
+            </form>
+          </div>
+        </div>
+    `;
+      modalContainer.appendChild(modal);
+      modal.showModal();
+    });
+
+    issueCard.innerHTML = `
+  <div class="flex-1 flex flex-col gap-3 p-4 me-auto">
+    <div class="flex items-center justify-between">
+      <img src="${element.status === "closed" ? "assets/status_closed.png" : "/assets/status_open.png"}" alt="" width="24px" height="24px" />
+      ${element.priority.toLowerCase() === "low" ? `<p class="bg-gray-100 rounded-full px-6 py-1 text-gray-500 text-sm">${element.priority.toUpperCase()}</p>` : ""}
+      ${element.priority.toLowerCase() === "medium" ? `<p class="bg-yellow-100 rounded-full px-6 py-1 text-yellow-600 text-sm">${element.priority.toUpperCase()}</p>` : ""}
+      ${element.priority.toLowerCase() === "high" ? `<p class="bg-red-100 rounded-full px-6 py-1 text-red-600 text-sm">${element.priority.toUpperCase()}</p>` : ""}
+    </div>
+    <div class="flex flex-col justify-center gap-2">
+      <h2 class="font-semibold text-xl text-[#1F2937]">
+        ${element.title}
+      </h2>
+      <p class="text-gray-500 text-sm">
+        ${element.description}
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      ${element.labels.map((label) => `<p class="bg-pink-100 rounded-full px-6 py-1 text-pink-500">${label}</p>`).join("")}
+    </div>
+  </div>
+  <div class="border border-gray-100"></div>
+  <div class="p-4 flex flex-col gap-2">
+    <p class="text-gray-500">by ${element.author}</p>
+    <p class="text-gray-500">${new Date(element.createdAt).toLocaleDateString()}</p>
+  </div>
+
+`;
+
+    issuesContainer.appendChild(issueCard);
+  });
+};
+
+const searchIssue = () => {
+  const query = document.getElementById("search_input").value;
+  fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${query}`)
+    .then((res) => res.json())
+    .then((data) => {
+      document.getElementById("issue_count").innerText =
+        `${data.data.length} Issues`;
+      renderIssueCard(data.data);
+    });
+};
+
+document.getElementById("category").addEventListener("click", (event) => {
+  const key = event.target.innerText.toLowerCase();
+  categoryBtnHandler(key);
+  categorizedRender(key);
+});
+
+const categoryBtnHandler = (key) => {
+  const categoryContainer = document.getElementById("category");
+  for (category of categoryContainer.children) {
+    if (category.innerText.toLowerCase() === key) {
+      category.classList.add("bg-primary", "text-white");
+    } else {
+      category.classList.remove("bg-primary", "text-white");
+    }
+  }
+};
+
+const categorizedRender = (category) => {
+  if (category != "all") {
+    const categorizedIssues = allIssues.filter(
+      (element) => element.status.toLowerCase() === category,
+    );
+    document.getElementById("issue_count").innerText =
+      `${categorizedIssues.length} Issues`;
+
+    renderIssueCard(categorizedIssues);
+  } else {
+    document.getElementById("issue_count").innerText =
+      `${allIssues.length} Issues`;
+    renderIssueCard(allIssues);
+  }
+};
