@@ -37,6 +37,14 @@ const renderIssueCard = (issues) => {
       `${element.status === "open" ? "border-t-green-500" : "border-t-purple-500"}`,
     );
 
+    const labelsList = {
+      bug: { color: "red", icon: "fa-bug" },
+      enhancement: { color: "green", icon: "fa-paint-roller" },
+      helpwanted: { color: "yellow", icon: "fa-circle-info" },
+      goodfirstissue: { color: "gray", icon: "fa-eye" },
+      documentation: { color: "blue", icon: "fa-book" },
+    };
+
     issueCard.addEventListener("click", () => {
       const modalContainer = document.getElementById("modal_div");
       modalContainer.showModal();
@@ -58,7 +66,8 @@ const renderIssueCard = (issues) => {
           <div class="flex flex-col justify-center gap-2">
             <h3 class="font-bold text-lg">${modalDetails.title}</h3>
             <div class="flex items-center gap-2 text-sm text-gray-500">
-              <p class="bg-green-600 text-white rounded-full px-2">Open</p>
+              
+              ${modalDetails.status.toLowerCase() == "open" ? `<p class="bg-green-600 text-white rounded-full px-2">Open</p>` : `<p class="bg-red-600 text-white rounded-full px-2">Closed</p>`}
               <div class="border-2 border-gray-500 rounded-full"></div>
               <p>Opened by ${modalDetails.author}</p>
               <div class="border-2 border-gray-500 rounded-full"></div>
@@ -67,14 +76,13 @@ const renderIssueCard = (issues) => {
           </div>
 
           <div class="flex gap-2">
-            ${modalDetails.labels
-              .map(
-                (element) =>
-                  `<p class="px-4 py-1 text-sm bg-orange-100 text-orange-600 rounded-full">
-              ${element}
-            </p>`,
-              )
-              .join("")}
+               ${modalDetails.labels
+                 .map((label) => {
+                   const fLabel = label.split(" ").join("");
+                   const labelDetails = labelsList[fLabel];
+                   return `<p class="bg-${labelDetails.color}-100 rounded-full px-3 py-0.5 text-${labelDetails.color}-500 flex items-center justify-center gap-1"><span><i class="text-sm fa-solid ${labelDetails.icon}"></i></span>${label}</p>`;
+                 })
+                 .join("")}
           </div>
 
           <p class="text-gray-500">
@@ -86,7 +94,7 @@ const renderIssueCard = (issues) => {
           >
             <div class="flex flex-col justify-center gap-1">
               <p>Assignee:</p>
-              <strong>${modalDetails.assignee}</strong>
+              <strong>${modalDetails.assignee ? `${modalDetails.assignee}` : "fahim_ahmed"}</strong>
             </div>
             <div class="flex flex-col justify-center gap-1">
               <p>Priority:</p>
@@ -125,6 +133,7 @@ const renderIssueCard = (issues) => {
           modalContainer.appendChild(modal);
         });
     });
+
     issueCard.innerHTML = `
   <div class="flex-1 flex flex-col gap-3 p-4 me-auto">
     <div class="flex items-center justify-between">
@@ -134,7 +143,7 @@ const renderIssueCard = (issues) => {
       ${element.priority.toLowerCase() === "high" ? `<p class="bg-red-100 rounded-full px-6 py-1 text-red-600 text-sm">${element.priority.toUpperCase()}</p>` : ""}
     </div>
     <div class="flex flex-col justify-center gap-2">
-      <h2 class="font-semibold text-xl text-[#1F2937]">
+      <h2 class="font-semibold text-lg text-[#1F2937]">
         ${element.title}
       </h2>
       <p class="text-gray-500 text-sm line-clamp-2">
@@ -142,7 +151,15 @@ const renderIssueCard = (issues) => {
       </p>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      ${element.labels.map((label) => `<p class="bg-pink-100 rounded-full px-6 py-1 text-pink-500">${label}</p>`).join("")}
+
+      ${element.labels
+        .map((label) => {
+          const fLabel = label.split(" ").join("");
+          const labelDetails = labelsList[fLabel];
+          return `<p class="bg-${labelDetails.color}-100 rounded-full px-3 py-1 text-${labelDetails.color}-500 flex items-center gap-1"><span><i class="fa-solid ${labelDetails.icon}"></i></span>${label}</p>`;
+        })
+        .join("")}
+
     </div>
   </div>
   <div class="border border-gray-100"></div>

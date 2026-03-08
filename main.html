@@ -9,6 +9,13 @@
       href="https://fonts.googleapis.com/css2?family=Geist&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <link
@@ -29,17 +36,21 @@
           <img src="assets/github-logo.png" alt="" width="35px" height="35px" />
           <a class="text-xl font-semibold">GitHub Issues Tracker</a>
         </div>
-        <div class="flex gap-2">
+        <form class="flex gap-2 items-center">
           <input
             id="search_input"
             type="text"
             placeholder="Search"
             class="input input-bordered w-auto"
           />
-          <button onclick="searchIssue()" class="btn btn-primary">
+          <button
+            onclick="searchIssue()"
+            onkeypress="searchIssue()"
+            class="btn btn-primary"
+          >
             Search
           </button>
-        </div>
+        </form>
       </div>
     </div>
     <!-- Header Section -->
