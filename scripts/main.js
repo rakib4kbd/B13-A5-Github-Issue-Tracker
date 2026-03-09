@@ -80,7 +80,7 @@ const renderIssueCard = (issues) => {
                  .map((label) => {
                    const fLabel = label.split(" ").join("");
                    const labelDetails = labelsList[fLabel];
-                   return `<p class="bg-${labelDetails.color}-100 rounded-full px-3 py-0.5 text-${labelDetails.color}-500 flex items-center justify-center gap-1"><span><i class="text-sm fa-solid ${labelDetails.icon}"></i></span>${label}</p>`;
+                   return `<p class="text-sm bg-${labelDetails.color}-100 rounded-full px-3 py-0.5 text-${labelDetails.color}-500 flex items-center justify-center gap-1"><span><i class="text-sm fa-solid ${labelDetails.icon}"></i></span>${label.toUpperCase()}</p>`;
                  })
                  .join("")}
           </div>
@@ -135,7 +135,7 @@ const renderIssueCard = (issues) => {
     });
 
     issueCard.innerHTML = `
-  <div class="flex-1 flex flex-col gap-3 p-4 me-auto">
+  <div class="flex-1 flex flex-col gap-3 p-4 me-auto w-full">
     <div class="flex items-center justify-between">
       <img src="${element.status === "closed" ? "./assets/status_closed.png" : "./assets/status_open.png"}" alt="" width="24px" height="24px" />
       ${element.priority.toLowerCase() === "low" ? `<p class="bg-gray-100 rounded-full px-6 py-1 text-gray-500 text-sm">${element.priority.toUpperCase()}</p>` : ""}
@@ -156,7 +156,7 @@ const renderIssueCard = (issues) => {
         .map((label) => {
           const fLabel = label.split(" ").join("");
           const labelDetails = labelsList[fLabel];
-          return `<p class="bg-${labelDetails.color}-100 rounded-full px-3 py-1 text-${labelDetails.color}-500 flex items-center gap-1"><span><i class="fa-solid ${labelDetails.icon}"></i></span>${label}</p>`;
+          return `<p class="text-sm bg-${labelDetails.color}-100 rounded-full px-3 py-1 text-${labelDetails.color}-500 flex items-center gap-1"><span><i class="fa-solid ${labelDetails.icon}"></i></span>${label.toUpperCase()}</p>`;
         })
         .join("")}
 
